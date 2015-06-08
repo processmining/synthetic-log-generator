@@ -1,0 +1,254 @@
+PARSER_BEGIN(LTLParser)
+package nl.tue.teamwork.execution.ltlparser.parse;
+
+import java.io.*;
+
+import nl.tue.teamwork.execution.ltlparser.comparsion.*;
+import nl.tue.teamwork.execution.ltlparser.formula.*;
+import nl.tue.teamwork.execution.ltlparser.formula.impl.*;
+import nl.tue.teamwork.execution.ltlparser.literal.*;
+import nl.tue.teamwork.execution.ltlparser.literal.impl.*;
+import nl.tue.teamwork.execution.ltlparser.proposition.*;
+import nl.tue.teamwork.execution.ltlparser.*;
+
+public class LTLParser {
+
+  public static void main(String args[]) throws ParseException {
+    LTLParser parser = new LTLParser(new StringReader("<> ( \"A.started\" )"));
+    
+    try{
+      IFormula formula = parser.input();
+      System.out.println(formula);
+    }    catch(ParseException e){
+          System.out.println(e.getMessage());
+    } catch (Error e){
+      System.out.println(e.getMessage());
+    }
+  }
+  
+  /**
+   * LTLParser
+   */
+  public LTLParser() {
+    this.ini();
+  }
+  
+  /**
+   * ini
+   */
+  public void ini() {
+    More.IMAGE = this.purge(GT);
+    Less.IMAGE = this.purge(LT);
+    MoreEqual.IMAGE = this.purge(GE);
+    LessEqual.IMAGE = this.purge(LE);
+    Equal.IMAGE = this.purge(EQ);
+    NotEqual.IMAGE = this.purge(NE);
+
+    Not.IMAGE = this.purge(NOT);
+    Or.IMAGE = this.purge(OR);
+    And.IMAGE = this.purge(AND);
+
+    Implication.IMAGE = this.purge(IMPLIES);
+    Equivalent.IMAGE = this.purge(BIIMPLIES);
+
+    Always.IMAGE = this.purge(ALWAYS);
+    Eventually.IMAGE = this.purge(EVENTUALLY);
+    Until.IMAGE = this.purge(UNTIL);
+    WeakUntil.IMAGE = this.purge(WEAKUNTIL);
+    NextTime.IMAGE = this.purge(NEXTTIME);
+  }
+
+  public String purge(int index) {
+    return tokenImage[index].replaceAll("\"", "");
+  }
+
+}
+
+PARSER_END(LTLParser)
+
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+}
+
+
+TOKEN :
+{
+    < INTEGER_LITERAL   : ["1"-"9"](["0"-"9"])* >
+|   < REAL_LITERAL  : 
+    (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)?
+    |   (["0"-"9"])+ (<EXPONENT>)? 
+    >
+|   < #EXPONENT     : ["e","E"](["+","-"])?(["0"-"9"])+ >
+|   < STRING_LITERAL    :
+    <DOUBLEQUOTE>
+    (
+        (~["\"", "\\", "\n", "\r"])
+    |   ("\\"(["n", "t", "b", "r", "f", "\\", "'", "\""]))
+    )*
+    <DOUBLEQUOTE>
+    >
+|   < DESC_LITERAL  :
+    "{"
+    (
+        (~["}","{"])
+    |   ("\\"(["n", "t", "b", "r", "f", "\\", "'", "\"", "{", "}"]))
+    )*
+    "}"
+    >
+}
+
+TOKEN :
+{
+  < ID: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","_","0"-"9"] )* >
+|
+  < NUM: ( ["0"-"9"] )+ >
+}
+
+TOKEN :
+{
+    < LPAREN        : "(" >
+|   < RPAREN        : ")" >
+|   < LBRACE        : "{" >
+|   < RBRACE        : "}" >
+|   < LBRACKET      : "[" >
+|   < RBRACKET      : "]" >
+}
+
+TOKEN:
+{
+    < SINGLEQUOTE : "'">
+ |  < DOUBLEQUOTE : "\"">
+}
+
+TOKEN :
+{
+    < GT        : ">"   >
+|   < LT        : "<"   >
+|   < NOT      : "!"   >
+|   < EQ        : "=="  >
+|   < LE        : "<="  >   
+|   < GE        : ">="  >
+|   < NE        : "!="  >
+|   < OR       : "\\/" >
+|   < AND      : "/\\" >
+|   < IMPLIES      : "->"  >
+|   < BIIMPLIES    : "<->" >
+|   < ALWAYS       : "[]"  >
+|   < EVENTUALLY   : "<>"  >
+|   < NEXTTIME     : "_O"  >
+|   < UNTIL        : "_U"  >
+|   < WEAKUNTIL        : "_W"  >
+}
+
+
+TOKEN:
+{
+  < PLUS  : "+" > 
+| < MINUS : "-" > 
+| < MULT  : "*" > 
+| < DIV   : "/" > 
+}
+IFormula input():
+{IFormula f;}
+{ 
+  ( f = formula() <EOF> {return f;} )
+}
+
+IFormula formula():
+{
+ IFormula f;
+}
+{
+  (
+      f = unaryFormula()  {return f;}
+    | f = binaryFormula()  {return f;}
+    | f = proposition() {return f;}
+  )  
+}
+
+IFormula unaryFormula():
+{
+ IFormula f;
+ IFormula result;
+ int op;
+}
+{
+    (
+        <NOT>        { op = NOT ;   }
+    |   <ALWAYS>     { op = ALWAYS ;   }
+    |   <EVENTUALLY> { op = EVENTUALLY ;   }
+    |   <NEXTTIME>   { op = NEXTTIME ;   }
+    )
+       <LPAREN> f = formula() <RPAREN> {
+         switch(op){
+         case NOT: f = FormulaFactory.not(f);
+                   break; 
+         case ALWAYS: f = FormulaFactory.always(f);
+                   break; 
+         case EVENTUALLY: f = FormulaFactory.eventually(f);
+                   break; 
+         case NEXTTIME: f = FormulaFactory.nextTime(f);
+                   break; 
+       }
+       return f;
+    }
+}
+
+IFormula binaryFormula():
+{
+IFormula f1;
+IFormula f2;
+IFormula f = null;
+Token t;
+int op;
+}
+{
+    <LPAREN> f1 = formula() 
+    (    
+        t=<AND>         {  op = AND;  }
+    |   t=<OR>          {  op = OR;  }
+    |   t=<IMPLIES>     {  op = IMPLIES;  }
+    |   t=<BIIMPLIES>   {  op = BIIMPLIES;  }
+    |   t=<UNTIL>       {  op = UNTIL;  }
+    |   t=<WEAKUNTIL>   {  op = WEAKUNTIL;  }
+    )
+     f2 = formula() <RPAREN>
+     {
+         switch(op){
+         case AND: f = FormulaFactory.and(f1,f2);
+                 break; 
+         case OR: f = FormulaFactory.or(f1,f2);
+                 break; 
+         case IMPLIES: f = FormulaFactory.implies(f1,f2);
+                 break; 
+         case BIIMPLIES: f = FormulaFactory.equivalent(f1,f2);
+                 break; 
+         case UNTIL: f = FormulaFactory.until(f1,f2);
+                 break; 
+         case WEAKUNTIL: f = FormulaFactory.weakUntil(f1,f2);
+                 break; 
+       }
+       return f;
+     }
+}
+
+IProposition proposition():
+{
+ILiteral l;
+}
+{
+  l = literal() { if (l instanceof StringLiteral) return FormulaFactory.proposition((StringLiteral) l); }
+}
+
+ILiteral literal():
+{ 
+  ILiteral l;
+  Token t;
+}
+{
+   t=<STRING_LITERAL> { return FormulaFactory.stringLiteral(t.image); }
+} 

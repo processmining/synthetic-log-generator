@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path=""/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="G:/jbproject/prototype/declare/trunk/lib/yawl_service.jar"/>
+	<classpathentry kind="lib" path="G:/jbproject/prototype/declare/trunk/lib/jep-2.4.0.jar"/>
+	<classpathentry kind="lib" path="G:/jbproject/prototype/declare/trunk/lib/jgraph.jar"/>
+	<classpathentry kind="lib" path="G:/jbproject/prototype/declare/trunk/lib/ltl2b_finite.jar"/>
+	<classpathentry kind="lib" path="G:/jbproject/prototype/declare/trunk/lib/ltl2ba4j.jar"/>
+	<classpathentry kind="lib" path="G:/jbproject/prototype/declare/trunk/lib/MXMLib.jar"/>
+	<classpathentry kind="lib" path="G:/jbproject/prototype/declare/trunk/lib/recommendations.jar"/>
+	<classpathentry kind="lib" path="G:/jbproject/prototype/declare/trunk/lib/xercesImpl.jar"/>
+	<classpathentry kind="output" path=""/>
+</classpath>

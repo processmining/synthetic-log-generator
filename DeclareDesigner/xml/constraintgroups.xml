@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><constraintgroups>
+  <constraintgroups>
+    
+    
+    
+    
+    
+  <group id="1"><name>HOSPITAL POLICY</name><description>Rules defined in the hospital internally.</description></group><group id="2"><name>GOVERMENT REGULATIONS</name><description>Rules imposed byt the regulations of the Health Ministry.</description></group><group id="3"><name>MEDICAL POLICY</name><description>Rules defined by the medical science.</description></group></constraintgroups>
+  <warning>
+    <level>7</level>
+  </warning>
+</constraintgroups>

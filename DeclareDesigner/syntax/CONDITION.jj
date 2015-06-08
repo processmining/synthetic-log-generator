@@ -1,0 +1,319 @@
+PARSER_BEGIN(ConditionParser)
+
+package nl.tue.teamwork.execution.ltlparser.parse;
+
+import nl.tue.teamwork.execution.ltlparser.comparsion.*;
+import nl.tue.teamwork.execution.ltlparser.expression.*;
+import nl.tue.teamwork.execution.ltlparser.formula.*;
+import nl.tue.teamwork.execution.ltlparser.formula.impl.*;
+import nl.tue.teamwork.execution.ltlparser.identifier.*;
+import nl.tue.teamwork.execution.ltlparser.literal.*;
+import nl.tue.teamwork.execution.ltlparser.value.*;
+import nl.tue.teamwork.execution.ltlparser.*;
+
+
+import java.util.*;
+import java.io.StringReader;
+
+public class ConditionParser {
+
+  public static void main(String args[]) throws ParseException {
+    ConditionParser parser = new ConditionParser(new StringReader(" ( activity < \"A\" /\\ price == 100.50 ) "));    
+    try{
+      IFormula formula = parser.input();
+      System.out.println(formula);
+    }    catch(ParseException e){
+       System.out.println(e.getMessage());
+    } catch (Error e){
+      System.out.println(e.getMessage());
+    }
+  }
+  
+  /**
+   * LTLParser
+   */
+  public ConditionParser() {
+    this.ini();
+  }
+  
+  /**
+   * ini
+   */
+  public void ini() {
+    More.IMAGE = this.purge(GT);
+    Less.IMAGE = this.purge(LT);
+    MoreEqual.IMAGE = this.purge(GE);
+    LessEqual.IMAGE = this.purge(LE);
+    Equal.IMAGE = this.purge(EQ);
+    NotEqual.IMAGE = this.purge(NE);
+
+    Not.IMAGE = this.purge(NOT);
+    Or.IMAGE = this.purge(OR);
+    And.IMAGE = this.purge(AND);
+
+    Implication.IMAGE = this.purge(IMPLIES);
+    Equivalent.IMAGE = this.purge(BIIMPLIES);
+  }
+
+  public String purge(int index) {
+    return tokenImage[index].replaceAll("\"", "");
+  }
+
+}
+
+PARSER_END(ConditionParser)
+
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+}
+
+
+TOKEN :
+{
+    < INTEGER_LITERAL   : ["1"-"9"](["0"-"9"])* >
+|   < REAL_LITERAL  : 
+    (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)?
+    |   (["0"-"9"])+ (<EXPONENT>)? 
+    >
+|   < #EXPONENT     : ["e","E"](["+","-"])?(["0"-"9"])+ >
+|   < STRING_LITERAL    :
+    <DOUBLEQUOTE> 
+    (
+        (~["\"", "\\", "\n", "\r"])
+    |   ("\\"(["n", "t", "b", "r", "f", "\\", "'", "\""]))
+    )*
+    <DOUBLEQUOTE> 
+    >
+|   < DESC_LITERAL  :
+    "{"
+    (
+        (~["}","{"])
+    |   ("\\"(["n", "t", "b", "r", "f", "\\", "'", "\"", "{", "}"]))
+    )*
+    "}"
+    >
+}
+
+TOKEN :
+{
+  < ID: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","_","0"-"9"] )* >
+|
+  < NUM: ( ["0"-"9"] )+ >
+}
+
+TOKEN :
+{
+    < LPAREN        : "(" >
+|   < RPAREN        : ")" >
+|   < LBRACE        : "{" >
+|   < RBRACE        : "}" >
+|   < LBRACKET      : "[" >
+|   < RBRACKET      : "]" >
+}
+
+TOKEN:
+{
+    < SINGLEQUOTE : "'">
+ |  < DOUBLEQUOTE : "\"">
+}
+
+TOKEN :
+{
+    < GT        : ">"   >
+|   < LT        : "<"   >
+|   < NOT      : "!"   >
+|   < EQ        : "=="  >
+|   < LE        : "<="  >   
+|   < GE        : ">="  >
+|   < NE        : "!="  >
+|   < OR       : "\\/" >
+|   < AND      : "/\\" >
+|   < IMPLIES      : "->"  >
+|   < BIIMPLIES    : "<->" >
+}
+
+
+TOKEN:
+{
+  < PLUS  : "+" > 
+| < MINUS : "-" > 
+| < MULT  : "*" > 
+| < DIV   : "/" > 
+}
+IFormula input():
+{IFormula f;}
+{ 
+  ( f = formula() <EOF> {return f;} )
+}
+
+IFormula formula():
+{
+ IFormula f;
+}
+{
+  (
+      f = unaryFormula()  {return f;}
+    | f = binaryFormula()  {return f;}
+    | f = comparsion() {return f;}
+  )  
+}
+
+IFormula unaryFormula():
+{
+ IFormula f;
+ IFormula result;
+ int op;
+}
+{
+    (
+        <NOT>        { op = NOT ;   }
+    )
+       <LPAREN> f = formula() <RPAREN> {
+         switch(op){
+         case NOT: f = FormulaFactory.not(f);
+                   break; 
+       }
+       return f;
+    }
+}
+
+IFormula binaryFormula():
+{
+IFormula f1;
+IFormula f2;
+IFormula f = null;
+Token t;
+int op;
+}
+{
+    <LPAREN> f1 = formula() 
+    (    
+        t=<AND>         {  op = AND;  }
+    |   t=<OR>          {  op = OR;  }
+    |   t=<IMPLIES>     {  op = IMPLIES;  }
+    |   t=<BIIMPLIES>   {  op = BIIMPLIES;  }
+    )
+     f2 = formula() <RPAREN>
+     {
+         switch(op){
+         case AND: f = FormulaFactory.and(f1,f2);
+                 break; 
+         case OR: f = FormulaFactory.or(f1,f2);
+                 break; 
+         case IMPLIES: f = FormulaFactory.implies(f1,f2);
+                 break; 
+         case BIIMPLIES: f = FormulaFactory.equivalent(f1,f2);
+                 break; 
+       }
+       return f;
+     }
+}
+
+Comparison comparsion() :
+{
+ IExpression e1; 
+ IExpression e2; 
+ Comparison c = null;
+ int op;
+}
+{
+  e1 = expression()
+  (
+     <GT> { op = GT; }
+    |<LT> { op = LT; }
+    |<EQ> { op = EQ; }
+    |<LE> { op = LE; }
+    |<GE> { op = GE; }
+    |<NE> { op = NE; }
+  ) 
+  e2 = expression()
+  { 
+    switch(op){
+         case GT: c = FormulaFactory.comparisonMore(e1,e2); 
+                  break; 
+         case LT:  c = FormulaFactory.comparisonLess(e1,e2);
+                  break; 
+         case EQ: c = FormulaFactory.comparisonEqual(e1,e2);
+                  break; 
+         case LE: c = FormulaFactory.comparisonLessEqual(e1,e2);
+                  break; 
+         case GE: c = FormulaFactory.comparisonMoreEqual(e1,e2); 
+                  break; 
+         case NE: c = FormulaFactory.comparisonNotEqual(e1,e2);
+                  break; 
+       }  
+    return c; 
+  }
+} 
+
+IIdentifier identifier():
+{
+    Token t;
+}
+{
+  t=<ID>
+    { 
+      return FormulaFactory.identifier(t.image);
+    }
+}
+
+
+IExpression expression():
+{ 
+ IExpression e1;
+ IExpression e2;
+ IExpression e = null;
+ IValue v;
+ int op;
+}
+{
+  <MINUS> e1 = expression() 
+   {
+    return FormulaFactory.unaryExpressionMinus(e1);
+   }
+| <LPAREN>  e1 = expression() 
+   ( 
+      <PLUS>  { op = PLUS;  }
+    | <MINUS> { op = MINUS;  }
+    | <MULT>  { op = MULT;   }
+    | <DIV>   { op = DIV;  }
+   ) 
+   e2 = expression() <RPAREN> { 
+        switch(op){
+         case PLUS: e = FormulaFactory.binaryExpressionPlus(e1,e2); 
+                  break; 
+         case MINUS:  e = FormulaFactory.binaryExpressionMinus(e1,e2);
+                  break; 
+         case MULT: e = FormulaFactory.binaryExpressionMultiply(e1,e2);
+                  break; 
+         case DIV: e = FormulaFactory.binaryExpressionDivide(e1,e2);
+                  break;
+       }    
+        return e;
+    }
+| v = value() { return FormulaFactory.valueExpression(v); }
+}
+
+ILiteral literal():
+{ 
+  ILiteral l;
+  Token t;
+}
+{
+     t=<INTEGER_LITERAL>  { return FormulaFactory.integerLiteral(t.image); }
+   | t=<REAL_LITERAL>     { return FormulaFactory.doubleLiteral(t.image); }
+   | t=<STRING_LITERAL> { return FormulaFactory.stringLiteral(t.image); }
+} 
+
+IValue value():
+{ 
+  IValue v = null;
+}
+{
+     v = literal()  { return v;}
+   | v = identifier() {return v; }
+} 

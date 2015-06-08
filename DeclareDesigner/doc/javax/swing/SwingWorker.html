@@ -1,0 +1,458 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><!--JBuilder QuickDoc-->
+<HEAD>
+<TITLE>Class javax.swing.SwingWorker</TITLE><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+</HEAD>
+<BODY>
+
+<H2>
+<FONT SIZE="-1">javax.swing</FONT>
+<BR>Class SwingWorker</H2>
+<DL>
+<DT>public abstract class <B>SwingWorker</B><DT>implements java.util.concurrent.RunnableFuture
+</DL>
+<DL><DD>An abstract class to perform lengthy GUI-interacting tasks in a dedicated thread. <p> When writing a multi-threaded application using Swing, there are two constraints to keep in mind: (refer to <a href="http://java.sun.com/docs/books/tutorial/uiswing/misc/threads.html"> How to Use Threads </a> for more details): <ul> <li> Time-consuming tasks should not be run on the <i>Event Dispatch Thread</i>. Otherwise the application becomes unresponsive. </li> <li> Swing components should be accessed on the <i>Event Dispatch Thread</i> only. </li> </ul> <p> <p> These constraints mean that a GUI application with time intensive computing needs at least two threads: 1) a thread to perform the lengthy task and 2) the <i>Event Dispatch Thread</i> (EDT) for all GUI-related activities. This involves inter-thread communication which can be tricky to implement. <p> {@code SwingWorker} is designed for situations where you need to have a long running task run in a background thread and provide updates to the UI either when done, or while processing. Subclasses of {@code SwingWorker} must implement the <A HREF="#doInBackground">#doInBackground</A> method to perform the background computation. <p> <b>Workflow</b> <p> There are three threads involved in the life cycle of a {@code SwingWorker} : <ul> <li> <p> <i>Current</i> thread: The <A HREF="#execute">#execute</A> method is called on this thread. It schedules {@code SwingWorker} for the execution on a <i>worker</i> thread and returns immediately. One can wait for the {@code SwingWorker} to complete using the <A HREF="#get get">get</A> methods. <li> <p> <i>Worker</i> thread: The <A HREF="#doInBackground">#doInBackground</A> method is called on this thread. This is where all background activities should happen. To notify {@code PropertyChangeListeners} about bound properties changes use the <A HREF="#firePropertyChange firePropertyChange">firePropertyChange</A> and <A HREF="#getPropertyChangeSupport">#getPropertyChangeSupport</A> methods. By default there are two bound properties available: {@code state} and {@code progress}. <li> <p> <i>Event Dispatch Thread</i>: All Swing related activities occur on this thread. {@code SwingWorker} invokes the <A HREF="#process process">process</A> and <A HREF="#done">#done</A> methods and notifies any {@code PropertyChangeListeners} on this thread. </ul> <p> Often, the <i>Current</i> thread is the <i>Event Dispatch Thread</i>. <p> Before the {@code doInBackground} method is invoked on a <i>worker</i> thread, {@code SwingWorker} notifies any {@code PropertyChangeListeners} about the {@code state} property change to {@code StateValue.STARTED}. After the {@code doInBackground} method is finished the {@code done} method is executed. Then {@code SwingWorker} notifies any {@code PropertyChangeListeners} about the {@code state} property change to {@code StateValue.DONE}. <p> {@code SwingWorker} is only designed to be executed once. Executing a {@code SwingWorker} more than once will not result in invoking the {@code doInBackground} method twice. <p> <b>Sample Usage</b> <p> The following example illustrates the simplest use case. Some processing is done in the background and when done you update a Swing component. <p> Say we want to find the "Meaning of Life" and display the result in a {@code JLabel}. <pre>
+final JLabel label;
+class MeaningOfLifeFinder extends SwingWorker&lt;String, Object&gt; {
+{@code @Override}
+public String doInBackground() {
+return findTheMeaningOfLife();
+}
+{@code @Override}
+protected void done() {
+try { 
+label.setText(get());
+} catch (Exception ignore) {
+}
+}
+}
+(new MeaningOfLifeFinder()).execute();
+</pre> <p> The next example is useful in situations where you wish to process data as it is ready on the <i>Event Dispatch Thread</i>. <p> Now we want to find the first N prime numbers and display the results in a {@code JTextArea}. While this is computing, we want to update our progress in a {@code JProgressBar}. Finally, we also want to print the prime numbers to {@code System.out}. <pre>
+class PrimeNumbersTask extends 
+SwingWorker&lt;List&lt;Integer&gt;, Integer&gt; {
+PrimeNumbersTask(JTextArea textArea, int numbersToFind) { 
+//initialize 
+}
+{@code @Override}
+public List&lt;Integer&gt; doInBackground() {
+while (! enough &amp;&amp; ! isCancelled()) {
+number = nextPrimeNumber();
+publish(number);
+setProgress(100 * numbers.size() / numbersToFind);
+}
+}
+return numbers;
+}
+{@code @Override}
+protected void process(List&lt;Integer&gt; chunks) {
+for (int number : chunks) {
+textArea.append(number + &quot;\n&quot;);
+}
+}
+}
+JTextArea textArea = new JTextArea();
+final JProgressBar progressBar = new JProgressBar(0, 100);
+PrimeNumbersTask task = new PrimeNumbersTask(textArea, N);
+task.addPropertyChangeListener(
+new PropertyChangeListener() {
+public  void propertyChange(PropertyChangeEvent evt) {
+if (&quot;progress&quot;.equals(evt.getPropertyName())) {
+progressBar.setValue((Integer)evt.getNewValue());
+}
+}
+});
+task.execute();
+System.out.println(task.get()); //prints all prime numbers we have got
+</pre> <p> Because {@code SwingWorker} implements {@code Runnable}, a {@code SwingWorker} can be submitted to an <A HREF="java.util.concurrent.Executor">java.util.concurrent.Executor</A> for execution.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE><T></CODE> - the result type returned by this {@code SwingWorker's} {@code doInBackground} and {@code get} methods</DD>
+<DD><CODE><V></CODE> - the type used for carrying out intermediate results by this {@code SwingWorker's} {@code publish} and {@code process} methods</DD>
+<DT><B>Version:</B><DD>1.7 08/10/06</DD>
+<DT><B>Author:</B><DD>Igor Kushnirskiy</DD>
+<DT><B>Since:</B><DD>1.6</DD>
+</DL>
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF"><TD COLSPAN=1><FONT SIZE="+2">
+<B>Field Detail</B>
+</FONT></TD></TR></TABLE>
+
+<A NAME="MAX_WORKER_THREADS"></A>
+
+<H3>MAX_WORKER_THREADS</H3>
+<PRE>
+private static final int <B>MAX_WORKER_THREADS</B></PRE>
+<DL><DD>number of worker threads.<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<A NAME="progress"></A>
+
+<H3>progress</H3>
+<PRE>
+private volatile int <B>progress</B></PRE>
+<DL><DD>current progress.<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<A NAME="state"></A>
+
+<H3>state</H3>
+<PRE>
+private volatile javax.swing.SwingWorker$StateValue <B>state</B></PRE>
+<DL><DD>current state.<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<A NAME="future"></A>
+
+<H3>future</H3>
+<PRE>
+private final java.util.concurrent.FutureTask <B>future</B></PRE>
+<DL><DD>everything is run inside this FutureTask. Also it is used as a delegatee for the Future API.<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<A NAME="propertyChangeSupport"></A>
+
+<H3>propertyChangeSupport</H3>
+<PRE>
+private final javax.swing.event.SwingPropertyChangeSupport <B>propertyChangeSupport</B></PRE>
+<DL><DD>all propertyChangeSupport goes through this.<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<A NAME="doProcess"></A>
+
+<H3>doProcess</H3>
+<PRE>
+private sun.swing.AccumulativeRunnable <B>doProcess</B></PRE>
+<DL><DD>handler for {@code process} mehtod.<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<A NAME="doNotifyProgressChange"></A>
+
+<H3>doNotifyProgressChange</H3>
+<PRE>
+private sun.swing.AccumulativeRunnable <B>doNotifyProgressChange</B></PRE>
+<DL><DD>handler for progress property change notifications.<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF"><TD COLSPAN=1><FONT SIZE="+2">
+<B>Constructor Detail</B>
+</FONT></TD></TR></TABLE>
+
+<A NAME="SwingWorker()"></A>
+
+<H3>SwingWorker</H3>
+<PRE>
+public <B>SwingWorker</B>()</PRE>
+<DL><DD>Constructs this {@code SwingWorker}.<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF"><TD COLSPAN=1><FONT SIZE="+2">
+<B>Method Detail</B>
+</FONT></TD></TR></TABLE>
+
+<A NAME="doInBackground()"></A>
+
+<H3>doInBackground</H3>
+<PRE>
+protected abstract T <B>doInBackground</B>()</PRE>
+<DL><DD>Computes a result, or throws an exception if unable to do so. <p> Note that this method is executed only once. <p> Note: this method is executed in a background thread.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Returns:</B><DD>the computed result</DD>
+<DT><B>Throws:</B><DD><CODE>Exception</CODE> - if unable to compute a result</DD>
+</DL>
+<HR>
+
+<A NAME="run()"></A>
+
+<H3>run</H3>
+<PRE>
+public final void <B>run</B>()</PRE>
+<DL><DD>Sets this {@code Future} to the result of computation unless it has been cancelled.<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<A NAME="publish(V[])"></A>
+
+<H3>publish</H3>
+<PRE>
+protected final void <B>publish</B>(V[]&nbsp;chunks)</PRE>
+<DL><DD>Sends data chunks to the <A HREF="#process">#process</A> method. This method is to be used from inside the {@code doInBackground} method to deliver intermediate results for processing on the <i>Event Dispatch Thread</i> inside the {@code process} method. <p> Because the {@code process} method is invoked asynchronously on the <i>Event Dispatch Thread</i> multiple invocations to the {@code publish} method might occur before the {@code process} method is executed. For performance purposes all these invocations are coalesced into one invocation with concatenated arguments. <p> For example: <pre>
+publish(&quot;1&quot;);
+publish(&quot;2&quot;, &quot;3&quot;);
+publish(&quot;4&quot;, &quot;5&quot;, &quot;6&quot;);
+</pre> might result in: <pre>
+process(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;, &quot;6&quot;)
+</pre> <p> <b>Sample Usage</b>. This code snippet loads some tabular data and updates {@code DefaultTableModel} with it. Note that it safe to mutate the tableModel from inside the {@code process} method because it is invoked on the <i>Event Dispatch Thread</i>. <pre>
+class TableSwingWorker extends 
+SwingWorker&lt;DefaultTableModel, Object[]&gt; {
+private final DefaultTableModel tableModel;
+public TableSwingWorker(DefaultTableModel tableModel) {
+this.tableModel = tableModel;
+}
+{@code @Override}
+protected DefaultTableModel doInBackground() throws Exception {
+for (Object[] row = loadData(); 
+! isCancelled() &amp;&amp; row != null; 
+row = loadData()) {
+publish((Object[]) row);
+}
+return tableModel;
+}
+{@code @Override}
+protected void process(List&lt;Object[]&gt; chunks) {
+for (Object[] row : chunks) {
+tableModel.addRow(row);
+}
+}
+}
+</pre><DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>chunks</CODE> - intermediate results to process</DD>
+<DT><B>See Also:</B><DD>#process</DD>
+</DL>
+<HR>
+
+<A NAME="process(java.util.List)"></A>
+
+<H3>process</H3>
+<PRE>
+protected void <B>process</B>(java.util.List&nbsp;chunks)</PRE>
+<DL><DD>Receives data chunks from the {@code publish} method asynchronously on the <i>Event Dispatch Thread</i>. <p> Please refer to the <A HREF="#publish">#publish</A> method for more details.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>chunks</CODE> - intermediate results to process</DD>
+<DT><B>See Also:</B><DD>#publish</DD>
+</DL>
+<HR>
+
+<A NAME="done()"></A>
+
+<H3>done</H3>
+<PRE>
+protected void <B>done</B>()</PRE>
+<DL><DD>Executed on the <i>Event Dispatch Thread</i> after the {@code doInBackground} method is finished. The default implementation does nothing. Subclasses may override this method to perform completion actions on the <i>Event Dispatch Thread</i>. Note that you can query status inside the implementation of this method to determine the result of this task or whether this task has been cancelled.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>See Also:</B><DD>#doInBackground</DD>
+<DD>#isCancelled()</DD>
+<DD>#get</DD>
+</DL>
+<HR>
+
+<A NAME="setProgress(int)"></A>
+
+<H3>setProgress</H3>
+<PRE>
+protected final void <B>setProgress</B>(int&nbsp;progress)</PRE>
+<DL><DD>Sets the {@code progress} bound property. The value should be from 0 to 100. <p> Because {@code PropertyChangeListener}s are notified asynchronously on the <i>Event Dispatch Thread</i> multiple invocations to the {@code setProgress} method might occur before any {@code PropertyChangeListeners} are invoked. For performance purposes all these invocations are coalesced into one invocation with the last invocation argument only. <p> For example, the following invokations: <pre>
+setProgress(1);
+setProgress(2);
+setProgress(3);
+</pre> might result in a single {@code PropertyChangeListener} notification with the value {@code 3}.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>progress</CODE> - the progress value to set</DD>
+<DT><B>Throws:</B><DD><CODE>IllegalArgumentException</CODE> - is value not from 0 to 100</DD>
+</DL>
+<HR>
+
+<A NAME="getProgress()"></A>
+
+<H3>getProgress</H3>
+<PRE>
+public final int <B>getProgress</B>()</PRE>
+<DL><DD>Returns the {@code progress} bound property.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Returns:</B><DD>the progress bound property.</DD>
+</DL>
+<HR>
+
+<A NAME="execute()"></A>
+
+<H3>execute</H3>
+<PRE>
+public final void <B>execute</B>()</PRE>
+<DL><DD>Schedules this {@code SwingWorker} for execution on a <i>worker</i> thread. There are a number of <i>worker</i> threads available. In the event all <i>worker</i> threads are busy handling other {@code SwingWorkers} this {@code SwingWorker} is placed in a waiting queue. <p> Note: {@code SwingWorker} is only designed to be executed once. Executing a {@code SwingWorker} more than once will not result in invoking the {@code doInBackground} method twice.<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<A NAME="cancel(boolean)"></A>
+
+<H3>cancel</H3>
+<PRE>
+public final boolean <B>cancel</B>(boolean&nbsp;mayInterruptIfRunning)</PRE>
+<DL><DD>{@inheritDoc}<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<A NAME="isCancelled()"></A>
+
+<H3>isCancelled</H3>
+<PRE>
+public final boolean <B>isCancelled</B>()</PRE>
+<DL><DD>{@inheritDoc}<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<A NAME="isDone()"></A>
+
+<H3>isDone</H3>
+<PRE>
+public final boolean <B>isDone</B>()</PRE>
+<DL><DD>{@inheritDoc}<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<A NAME="get()"></A>
+
+<H3>get</H3>
+<PRE>
+public final T <B>get</B>()</PRE>
+<DL><DD>{@inheritDoc} <p> Note: calling {@code get} on the <i>Event Dispatch Thread</i> blocks <i>all</i> events, including repaints, from being processed until this {@code SwingWorker} is complete. <p> When you want the {@code SwingWorker} to block on the <i>Event Dispatch Thread</i> we recommend that you use a <i>modal dialog</i>. <p> For example: <pre>
+class SwingWorkerCompletionWaiter extends PropertyChangeListener {
+private JDialog dialog;
+public SwingWorkerCompletionWaiter(JDialog dialog) {
+this.dialog = dialog;
+}
+public void propertyChange(PropertyChangeEvent event) {
+if (&quot;state&quot;.equals(event.getPropertyName())
+&amp;&amp; SwingWorker.StateValue.DONE == event.getNewValue()) {
+dialog.setVisible(false);
+dialog.dispose();
+}
+}
+}
+JDialog dialog = new JDialog(owner, true);
+swingWorker.addPropertyChangeListener(
+new SwingWorkerCompletionWaiter(dialog));
+swingWorker.execute();
+//the dialog will be visible until the SwingWorker is done
+dialog.setVisible(true); 
+</pre><DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<A NAME="get(long, java.util.concurrent.TimeUnit)"></A>
+
+<H3>get</H3>
+<PRE>
+public final T <B>get</B>(long&nbsp;timeout,
+                   java.util.concurrent.TimeUnit&nbsp;unit)</PRE>
+<DL><DD>{@inheritDoc} <p> Please refer to <A HREF="#get">#get</A> for more details.<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<A NAME="addPropertyChangeListener(java.beans.PropertyChangeListener)"></A>
+
+<H3>addPropertyChangeListener</H3>
+<PRE>
+public final void <B>addPropertyChangeListener</B>(java.beans.PropertyChangeListener&nbsp;listener)</PRE>
+<DL><DD>Adds a {@code PropertyChangeListener} to the listener list. The listener is registered for all properties. The same listener object may be added more than once, and will be called as many times as it is added. If {@code listener} is {@code null}, no exception is thrown and no action is taken. <p> Note: This is merely a convenience wrapper. All work is delegated to {@code PropertyChangeSupport} from <A HREF="#getPropertyChangeSupport">#getPropertyChangeSupport</A>.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>listener</CODE> - the {@code PropertyChangeListener} to be added</DD>
+</DL>
+<HR>
+
+<A NAME="removePropertyChangeListener(java.beans.PropertyChangeListener)"></A>
+
+<H3>removePropertyChangeListener</H3>
+<PRE>
+public final void <B>removePropertyChangeListener</B>(java.beans.PropertyChangeListener&nbsp;listener)</PRE>
+<DL><DD>Removes a {@code PropertyChangeListener} from the listener list. This removes a {@code PropertyChangeListener} that was registered for all properties. If {@code listener} was added more than once to the same event source, it will be notified one less time after being removed. If {@code listener} is {@code null}, or was never added, no exception is thrown and no action is taken. <p> Note: This is merely a convenience wrapper. All work is delegated to {@code PropertyChangeSupport} from <A HREF="#getPropertyChangeSupport">#getPropertyChangeSupport</A>.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>listener</CODE> - the {@code PropertyChangeListener} to be removed</DD>
+</DL>
+<HR>
+
+<A NAME="firePropertyChange(java.lang.String, java.lang.Object, java.lang.Object)"></A>
+
+<H3>firePropertyChange</H3>
+<PRE>
+public final void <B>firePropertyChange</B>(java.lang.String&nbsp;propertyName,
+                                     java.lang.Object&nbsp;oldValue,
+                                     java.lang.Object&nbsp;newValue)</PRE>
+<DL><DD>Reports a bound property update to any registered listeners. No event is fired if {@code old} and {@code new} are equal and non-null. <p> This {@code SwingWorker} will be the source for any generated events. <p> When called off the <i>Event Dispatch Thread</i> {@code PropertyChangeListeners} are notified asynchronously on the <i>Event Dispatch Thread</i>. <p> Note: This is merely a convenience wrapper. All work is delegated to {@code PropertyChangeSupport} from <A HREF="#getPropertyChangeSupport">#getPropertyChangeSupport</A>.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>propertyName</CODE> - the programmatic name of the property that was changed</DD>
+<DD><CODE>oldValue</CODE> - the old value of the property</DD>
+<DD><CODE>newValue</CODE> - the new value of the property</DD>
+</DL>
+<HR>
+
+<A NAME="getPropertyChangeSupport()"></A>
+
+<H3>getPropertyChangeSupport</H3>
+<PRE>
+public final java.beans.PropertyChangeSupport <B>getPropertyChangeSupport</B>()</PRE>
+<DL><DD>Returns the {@code PropertyChangeSupport} for this {@code SwingWorker}. This method is used when flexible access to bound properties support is needed. <p> This {@code SwingWorker} will be the source for any generated events. <p> Note: The returned {@code PropertyChangeSupport} notifies any {@code PropertyChangeListener}s asynchronously on the <i>Event Dispatch Thread</i> in the event that {@code firePropertyChange} or {@code fireIndexedPropertyChange} are called off the <i>Event Dispatch Thread</i>.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Returns:</B><DD>{@code PropertyChangeSupport} for this {@code SwingWorker}</DD>
+</DL>
+<HR>
+
+<A NAME="getState()"></A>
+
+<H3>getState</H3>
+<PRE>
+public final javax.swing.SwingWorker$StateValue <B>getState</B>()</PRE>
+<DL><DD>Returns the {@code SwingWorker} state bound property.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Returns:</B><DD>the current state</DD>
+</DL>
+<HR>
+
+<A NAME="setState(javax.swing.SwingWorker$StateValue)"></A>
+
+<H3>setState</H3>
+<PRE>
+private void <B>setState</B>(javax.swing.SwingWorker$StateValue&nbsp;state)</PRE>
+<DL><DD>Sets this {@code SwingWorker} state bound property.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>the</CODE> - state state to set</DD>
+</DL>
+<HR>
+
+<A NAME="doneEDT()"></A>
+
+<H3>doneEDT</H3>
+<PRE>
+private void <B>doneEDT</B>()</PRE>
+<DL><DD>Invokes {@code done} on the EDT.<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<A NAME="getWorkersExecutorService()"></A>
+
+<H3>getWorkersExecutorService</H3>
+<PRE>
+private static synchronized java.util.concurrent.ExecutorService <B>getWorkersExecutorService</B>()</PRE>
+<DL><DD>returns workersExecutorService. returns the service stored in the appContext or creates it if necessary. If the last one it triggers autoShutdown thread to get started.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Returns:</B><DD>ExecutorService for the {@code SwingWorkers}</DD>
+<DT><B>See Also:</B><DD>#startAutoShutdownThread</DD>
+</DL>
+<HR>
+
+</BODY>
+</HTML>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="**/*svn*/**|.classpath|.project" kind="src" path="src"/>
+	<classpathentry kind="lib" path="lib/jep-2.4.0.jar"/>
+	<classpathentry kind="lib" path="lib/jgraph.jar"/>
+	<classpathentry kind="lib" path="lib/ltl2aut.jar"/>
+	<classpathentry kind="lib" path="lib/TableLayout.jar"/>
+	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
+	<classpathentry kind="lib" path="lib/yawl_service.jar"/>
+	<classpathentry kind="lib" path="lib/OpenXES.jar"/>
+	<classpathentry kind="lib" path="lib/OpenXES-XStream.jar"/>
+	<classpathentry kind="lib" path="lib/Spex.jar"/>
+	<classpathentry kind="lib" path="lib/java-cup-11a-runtime.jar"/>
+	<classpathentry kind="lib" path="lib/os-client.jar"/>
+	<classpathentry kind="lib" path="lib/collections-generic-4.01.jar"/>
+	<classpathentry kind="lib" path="lib/xstream-1.3.1.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/declarative-log-generator"/>
+	<classpathentry kind="lib" path="lib/swing-layout-1.0.4.jar"/>
+	<classpathentry kind="output" path="classes"/>
+</classpath>

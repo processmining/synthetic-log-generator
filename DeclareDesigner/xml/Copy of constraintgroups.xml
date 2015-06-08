@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<constraintgroups>
+  <constraintgroups>
+    <group id="1">
+      <name>BILLING POLICY</name>
+      <description>Sets up rules that should ensure mininized billing risks</description>
+    </group>
+    <group id="3">
+      <name>HOSPITAL POLICY</name>
+      <description>Rules defined for the hospital internally</description>
+      </group>
+    <group id="4">
+      <name>HEALTH MINISTRY POLICY</name>
+      <description>Rules defined by the goverment on the state level</description>
+    </group>
+    <group id="5">
+      <name>MEDICAL POLICY</name>
+      <description>Rules defined by the medical science</description>
+    </group>
+    <group id="6">
+      <name>ETHICAL POLICY</name>
+      <description>Ethical rules of the medical science</description>
+    </group>
+  </constraintgroups>
+  <warning>
+    <level>7</level>
+  </warning>
+</constraintgroups>
