@@ -30,13 +30,33 @@
 
 package nl.tue.declare.appl.design.gui;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import org.deckfour.xes.model.XLog;
+
+import minerful.concept.ProcessModel;
+import minerful.io.encdec.declare.DeclareEncoderDecoder;
+import minerful.logmaker.MinerFulLogMaker;
+import minerful.logmaker.params.LogMakerCmdParameters;
+import minerful.logmaker.params.LogMakerCmdParameters.Encoding;
 
 public class ParameterSettings2 extends javax.swing.JFrame {
-    
+
+	
+	public static final Integer MIN_EVENTS_PER_TRACE = 5;
+	public static final Integer MAX_EVENTS_PER_TRACE = 45;
+	public static final Long TRACES_IN_LOG = (long)100;
+	public static final Encoding OUTPUT_ENCODING = Encoding.xes;
+	public static final File OUTPUT_LOG = new File("/home/claudio/Desktop/Temp-MINERful/test-log-output/log-from-Declare-map.xml");
+	
     /**
      * Creates new form ContactEditor
      */
@@ -77,14 +97,14 @@ public class ParameterSettings2 extends javax.swing.JFrame {
 
         jLabel10.setText("Max Size");
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Generation Wizard"));
         jPanel2.setToolTipText("");
 
         jLabel6.setText("Select Output");
 
-        jTextField5.setText("/declare/eomas/model.xes");
+        jTextField5.setText("");
         jTextField5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField5ActionPerformed(evt);
@@ -92,7 +112,27 @@ public class ParameterSettings2 extends javax.swing.JFrame {
         });
 
         jButton1.setText("Select");
-
+        
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            	JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir"));
+            	 // For Directory
+                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                FileFilter filter = new FileNameExtensionFilter("XES files", "xes");
+                fileChooser.addChoosableFileFilter(filter);
+                filter = new FileNameExtensionFilter("MXML files", "mxml");
+                fileChooser.addChoosableFileFilter(filter);
+                // For File
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+         
+                //fileChooser.setAcceptAllFileFilterUsed(false);
+         
+                int rVal = fileChooser.showOpenDialog(null);
+                if (rVal == JFileChooser.APPROVE_OPTION) {
+                	jTextField5.setText(fileChooser.getSelectedFile().toString());
+                }//jTextField5.setText(JFileChooser.fileName);
+            }
+        });
         jLabel11.setText("Progress");
 
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
@@ -129,6 +169,11 @@ public class ParameterSettings2 extends javax.swing.JFrame {
         );
 
         jButton5.setText("Cancel");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            	dispose();
+            }
+        });
 
         jButton6.setText("Generate");
         jButton6.addActionListener(new java.awt.event.ActionListener() {
@@ -165,7 +210,7 @@ public class ParameterSettings2 extends javax.swing.JFrame {
         );
 
         jPanel2.getAccessibleContext().setAccessibleName("Model and Parameters");
-
+        setTitle("Log Generation Settings"); //Tartu
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -181,19 +226,61 @@ public class ParameterSettings2 extends javax.swing.JFrame {
         new Thread(new Runnable() {
 
             public void run() {
-                int current =0;
-                int delta = jProgressBar1.getWidth()/100;
-                while(current  < jProgressBar1.getWidth()/4){
-                try {
-                    Thread.sleep((int)(200*Math.random()));
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(ParameterSettings2.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                jProgressBar1.setValue(current);
-                current+=delta;
-                }
+                
+            	if (jTextField5.getText().isEmpty())
+            	{
+            		JOptionPane.showMessageDialog(null, "Please select output file!");
+            		jTextField5.requestFocus();
+            		return;
+            	}
+            	          	
+            	
+            	try {
+            		
+            		jProgressBar1.setMaximum(10);
+            		jProgressBar1.setValue(1);
+            		
+            	int minVal  = Integer.parseInt(ParameterSettings.jTextField6.getText());
+            	int maxVal  = Integer.parseInt(ParameterSettings.jTextField8.getText());
+            	long traceVal  =  Long.valueOf(ParameterSettings.jTextField9.getText());
+            	Encoding OUTPUT_ENCODING = Encoding.xes;
+            	           	
+            	File OUTPUT_LOG = new File(jTextField5.getText());         		
+            
+            	if (ParameterSettings.jRadioButton2.isSelected()){
+            		
+            		OUTPUT_ENCODING = Encoding.string;
+            	} else if (ParameterSettings.jRadioButton3.isSelected())
+            	{
+            		OUTPUT_ENCODING = Encoding.mxml;	
+            	} else
+            	{
+            		OUTPUT_ENCODING = Encoding.xes;	
+            	}
+            	
+            	
+            	jProgressBar1.setValue(2);
+            	ProcessModel proMod =
+        				DeclareEncoderDecoder.fromDeclareMapToMinerfulProcessModel(ParameterSettings.jTextField5.getText());
+        		LogMakerCmdParameters logMakParameters = new LogMakerCmdParameters(minVal, maxVal, traceVal);
+        		//Tartu MIN_EVENTS_PER_TRACE, MAX_EVENTS_PER_TRACE, TRACES_IN_LOG);
+        		jProgressBar1.setValue(6);
+        		MinerFulLogMaker logMak = new MinerFulLogMaker(logMakParameters);
+        		logMak.createLog(proMod);        		
+        		jProgressBar1.setValue(8);
+        		logMakParameters.outputEncoding = OUTPUT_ENCODING;        		
+			//	System.out.println(logMak.printEncodedLog());			
+        		logMakParameters.outputLogFile = OUTPUT_LOG;
+        		logMak.storeLog();
+        		jProgressBar1.setValue(10);
+        		} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            	
+            	
                 JOptionPane.showMessageDialog(null, "Generation completed!");
-                System.exit(0);
+               // System.exit(0); Tartu
             }
         }).start();
     }//GEN-LAST:event_jButton6ActionPerformed

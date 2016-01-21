@@ -108,6 +108,7 @@ public class DesignerCoordinator implements AssignmentCoordinatorListener {
 			frameSize.width = screenSize.width;
 		}
 		mainFrame.setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
+		mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH); //Tartu 
 		mainFrame.setVisible(true);
 	}
 

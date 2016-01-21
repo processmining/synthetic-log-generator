@@ -14,10 +14,12 @@ package nl.tue.declare.graph;
  */
 import java.awt.*;
 import java.awt.geom.*;
+
 import javax.swing.*;
 import javax.swing.border.*;
 
 import org.jgraph.graph.*;
+
 import nl.tue.declare.domain.*;
 
 public abstract class DVertex
@@ -132,9 +134,11 @@ protected static final int WIDTH = 90;
 
   /**
    * addPort
+ * @return 
    */
-  public void addPort() {
+  public Object addPort() {
     this.add(new DPort(this));
+	return attributes; // Tartu
   }
 
   /**

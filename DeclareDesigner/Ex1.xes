@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- This file has been generated with the OpenXES library. It conforms -->
+<!-- to the XML serialization of the XES standard for log storage and -->
+<!-- management. -->
+<!-- XES standard version: 1.0 -->
+<!-- OpenXES library version: 1.0RC7 -->
+<!-- OpenXES is available from http://www.openxes.org/ -->
+<log xes.version="1.0" xes.features="nested-attributes" openxes.version="1.0RC7" xmlns="http://www.xes-standard.org/">
+	<extension name="Time" prefix="time" uri="http://www.xes-standard.org/time.xesext"/>
+	<extension name="Lifecycle" prefix="lifecycle" uri="http://www.xes-standard.org/lifecycle.xesext"/>
+	<extension name="Concept" prefix="concept" uri="http://www.xes-standard.org/concept.xesext"/>
+	<classifier name="Event Name" keys="concept:name"/>
+	<string key="concept:name" value="Synthetic log for process: new model"/>
+	<string key="lifecycle:model" value="standard"/>
+	<trace>
+		<string key="concept:name" value="Synthetic trace no. 0"/>
+		<event>
+			<string key="concept:name" value="receive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-04T09:07:26.108+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="receive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-04T13:03:24.524+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="send invoice"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-05T04:34:32.572+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Archive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-05T22:09:06.471+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Archive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-06T12:03:10.016+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Archive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-07T03:49:58.154+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="receive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-08T02:05:18.089+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="send invoice"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-08T12:48:49.892+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Archive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-09T11:36:53.502+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Archive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-09T14:56:18.712+02:00"/>
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Synthetic trace no. 1"/>
+		<event>
+			<string key="concept:name" value="receive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-10T06:05:39.892+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Archive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-10T07:16:53.068+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Archive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-11T02:11:20.612+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="send invoice"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-11T16:16:31.881+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="receive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-11T19:41:35.598+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="receive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-12T17:04:02.550+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="send invoice"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-13T01:12:19.047+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="receive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-13T14:51:13.804+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Archive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-14T09:41:42.156+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="receive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-14T23:11:36.035+02:00"/>
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Synthetic trace no. 2"/>
+		<event>
+			<string key="concept:name" value="receive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-15T20:25:43.016+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Archive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-15T21:51:59.026+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Archive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-16T20:55:08.286+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="receive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-17T12:28:17.125+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Archive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-17T16:08:13.896+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Archive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-18T07:32:00.203+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="send invoice"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-18T22:49:18.781+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Archive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-19T08:06:30.097+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Archive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-19T16:09:42.966+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Archive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-20T12:47:53.163+02:00"/>
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Synthetic trace no. 3"/>
+		<event>
+			<string key="concept:name" value="receive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-21T02:59:05.395+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Archive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-21T10:52:16.333+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Archive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-22T00:08:46.840+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Archive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-22T11:57:05.175+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Archive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-22T12:06:09.156+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="send invoice"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-22T19:22:56.361+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="send invoice"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-23T19:21:12.220+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="send invoice"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-23T23:33:15.954+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Archive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-24T08:06:13.305+02:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Archive order"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2014-11-24T17:39:03.907+02:00"/>
+		</event>
+	</trace>
+</log>

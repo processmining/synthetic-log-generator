@@ -29,11 +29,20 @@
  */
 
 package nl.tue.declare.appl.design.gui;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 
 public class ParameterSettings extends javax.swing.JFrame {
     
-    /**
+	
+	/**
      * Creates new form ContactEditor
      */
     public ParameterSettings() {
@@ -82,14 +91,16 @@ public class ParameterSettings extends javax.swing.JFrame {
 
         jLabel10.setText("Max Size");
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Generation Wizard"));
         jPanel2.setToolTipText("");
-
+              
+       
+        
         jLabel6.setText("Select Model");
 
-        jTextField5.setText("/declare/eomas/model.xml");
+        jTextField5.setText(""); //Taru path
         jTextField5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField5ActionPerformed(evt);
@@ -97,6 +108,25 @@ public class ParameterSettings extends javax.swing.JFrame {
         });
 
         jButton1.setText("Select");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            	JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir"));
+            	            	 
+                // For Directory
+                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+         
+                // For File
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                FileFilter filter = new FileNameExtensionFilter("XML files", "xml");
+                fileChooser.addChoosableFileFilter(filter);
+                //fileChooser.setAcceptAllFileFilterUsed(false);
+         
+                int rVal = fileChooser.showOpenDialog(null);
+                if (rVal == JFileChooser.APPROVE_OPTION) {
+                	jTextField5.setText(fileChooser.getSelectedFile().toString());
+                }//jTextField5.setText(JFileChooser.fileName);
+            }
+        });
 
         jLabel7.setText("Output Format:");
 
@@ -152,6 +182,8 @@ public class ParameterSettings extends javax.swing.JFrame {
                 jTextField9ActionPerformed(evt);
             }
         });
+        
+    	
 
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -225,6 +257,13 @@ public class ParameterSettings extends javax.swing.JFrame {
         );
 
         jButton5.setText("Cancel");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            	dispose();
+            }
+        });
+        
+       
 
         jButton6.setText("Next");
         jButton6.addActionListener(new java.awt.event.ActionListener() {
@@ -263,7 +302,7 @@ public class ParameterSettings extends javax.swing.JFrame {
         );
 
         jPanel2.getAccessibleContext().setAccessibleName("Model and Parameters");
-
+        setTitle("BMP Model Settings"); //Tartu
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -296,9 +335,48 @@ public class ParameterSettings extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField9ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        new ParameterSettings2().show();
+    	if (jTextField5.getText().isEmpty()){
+    		JOptionPane.showMessageDialog(null, "Please select the input file!");
+    		jTextField5.requestFocus();
+    	}
+    else if (!Checkint(jTextField6.getText())){
+    	jTextField6.requestFocus();
+    } else  if (!Checkint(jTextField8.getText())){
+    	jTextField8.requestFocus();
+    } else  if (!Checkint(jTextField9.getText())){
+    	jTextField9.requestFocus();
+    }    	
+    
+    else
+    {    	
+    	new ParameterSettings2().show();
+    }
+    	
 
     }//GEN-LAST:event_jButton6ActionPerformed
+    
+    private boolean Checkint(String val)
+    {       	
+    	boolean ret = true;
+    	if (val.isEmpty())
+    	{
+    		ret = false;
+    	}
+    	
+    	try {
+    		Integer.parseInt(val);
+    		ret = true;
+    		} catch (Exception e) {
+    		//return as the variable is not a proper integer.
+    			ret = false;
+    		}   
+    	
+    	if (!ret){
+    		JOptionPane.showMessageDialog(null, "Incorrect input!");
+    	}
+    	
+    	return ret;
+    }
     
     /**
      * @param args the command line arguments
@@ -350,13 +428,13 @@ public class ParameterSettings extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
-    private javax.swing.JRadioButton jRadioButton3;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
+    static javax.swing.JRadioButton jRadioButton2;
+    static javax.swing.JRadioButton jRadioButton3;
+    static javax.swing.JTextField jTextField5;
+    static javax.swing.JTextField jTextField6;
     private javax.swing.JTextField jTextField7;
-    private javax.swing.JTextField jTextField8;
-    private javax.swing.JTextField jTextField9;
+    static javax.swing.JTextField jTextField8;
+    static javax.swing.JTextField jTextField9;
     // End of variables declaration//GEN-END:variables
     
 }

@@ -127,17 +127,17 @@ public class DEdgeRenderer
 
   private Color switchColor(Color color) {
     Color c = this.getForeground();
-    if (color != null) {
-      if (color.equals(graph.getBackground())) {
-        c = this.getForeground();
-      } else {
-        c = graph.getBackground();
-      }
-    }
-
-    if (selected) {
-      c = graph.getHighlightColor();
-    }
+//    if (color != null) { //Tartu
+//      if (color.equals(graph.getBackground())) {
+//        c = this.getForeground();
+//      } else {
+//        c = graph.getBackground();
+//      }
+//    }
+//
+//    if (selected) {
+//      c = ((Object) graph).getHighlightColor();
+//    }
     return c;
   }
 

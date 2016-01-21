@@ -3,6 +3,7 @@ package nl.tue.declare.graph;
 import java.awt.geom.*;
 
 import org.jgraph.graph.*;
+
 import nl.tue.declare.domain.*;
 
 /**
@@ -62,7 +63,7 @@ public class TransparentCell
         old.getHeight()));
   }
 
-  public void addPort(Point2D offset, Object userObject) {
+  public Object addPort(Point2D offset, Object userObject) {
     DefaultPort port = new TransparentPort(userObject);
     if (offset == null) {
       add(port);
@@ -71,5 +72,6 @@ public class TransparentCell
       GraphConstants.setOffset(port.getAttributes(), offset);
       add(port);
     }
+	return port;
   }
 }

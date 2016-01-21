@@ -6,6 +6,7 @@ import nl.tue.declare.graph.*;
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
+
 import java.awt.Font;
 
 /**
@@ -72,9 +73,11 @@ public class ActivityDefinitonCell
 
   /**
    * addPort
+ * @return 
    */
-  public void addPort() {
+  public Object addPort() {
     this.add(new ActivityDefinitionPort(this));
+	return attributes; //Tartu
   }
 
   public double getDiameter() {
