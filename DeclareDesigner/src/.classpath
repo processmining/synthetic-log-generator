@@ -10,5 +10,6 @@
 	<classpathentry kind="lib" path="G:/jbproject/prototype/declare/trunk/lib/MXMLib.jar"/>
 	<classpathentry kind="lib" path="G:/jbproject/prototype/declare/trunk/lib/recommendations.jar"/>
 	<classpathentry kind="lib" path="G:/jbproject/prototype/declare/trunk/lib/xercesImpl.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Declare-log-generator"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

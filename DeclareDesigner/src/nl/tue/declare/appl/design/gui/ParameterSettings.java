@@ -302,7 +302,7 @@ public class ParameterSettings extends javax.swing.JFrame {
         );
 
         jPanel2.getAccessibleContext().setAccessibleName("Model and Parameters");
-        setTitle("BMP Model Settings"); //Tartu
+        setTitle("Event log Settings"); //Tartu
         pack();
     }// </editor-fold>//GEN-END:initComponents
 

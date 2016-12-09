@@ -281,7 +281,7 @@ public class DesignerCoordinator implements AssignmentCoordinatorListener {
 			jMenuAssignment.add(menuItem);
 		}
 		{
-			JMenuItem menuItem = new JMenuItem("Generate Model");
+			JMenuItem menuItem = new JMenuItem("Generate Log");
 			setMenuKey(menuItem, KEY_OPEN_MODEL);
 			menuItem.setActionCommand("generate");
 			menuItem.addActionListener(new ActionListener() {

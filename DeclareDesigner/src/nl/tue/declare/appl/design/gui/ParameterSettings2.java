@@ -43,7 +43,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import org.deckfour.xes.model.XLog;
 
 import minerful.concept.ProcessModel;
-import minerful.io.encdec.declare.DeclareEncoderDecoder;
+import minerful.io.encdec.declaremap.DeclareMapEncoderDecoder;
 import minerful.logmaker.MinerFulLogMaker;
 import minerful.logmaker.params.LogMakerCmdParameters;
 import minerful.logmaker.params.LogMakerCmdParameters.Encoding;
@@ -261,7 +261,7 @@ public class ParameterSettings2 extends javax.swing.JFrame {
             	
             	jProgressBar1.setValue(2);
             	ProcessModel proMod =
-        				DeclareEncoderDecoder.fromDeclareMapToMinerfulProcessModel(ParameterSettings.jTextField5.getText());
+            			new DeclareMapEncoderDecoder(ParameterSettings.jTextField5.getText()).createMinerFulProcessModel();
         		LogMakerCmdParameters logMakParameters = new LogMakerCmdParameters(minVal, maxVal, traceVal);
         		//Tartu MIN_EVENTS_PER_TRACE, MAX_EVENTS_PER_TRACE, TRACES_IN_LOG);
         		jProgressBar1.setValue(6);
