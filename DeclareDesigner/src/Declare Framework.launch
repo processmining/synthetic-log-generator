@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/Declare-log-generator/src/nl/tue/declare/appl/design/Designer.java"/>
+<listEntry value="/Declare-framework/nl/tue/declare/appl/framework/Framework.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
@@ -11,6 +11,6 @@
 <listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
 <listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
 </listAttribute>
-<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="nl.tue.declare.appl.design.Designer"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="Declare-log-generator"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="nl.tue.declare.appl.framework.Framework"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="Declare-framework"/>
 </launchConfiguration>
