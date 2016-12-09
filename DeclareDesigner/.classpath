@@ -5,8 +5,6 @@
 	<classpathentry kind="lib" path="lib/ltl2aut.jar"/>
 	<classpathentry kind="lib" path="lib/TableLayout.jar"/>
 	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
-	<classpathentry kind="lib" path="lib/OpenXES.jar"/>
-	<classpathentry kind="lib" path="lib/OpenXES-XStream.jar"/>
 	<classpathentry kind="lib" path="lib/Spex.jar"/>
 	<classpathentry kind="lib" path="lib/java-cup-11a-runtime.jar"/>
 	<classpathentry kind="lib" path="lib/os-client.jar"/>
@@ -26,5 +24,7 @@
 	<classpathentry kind="lib" path="lib/swing-layout-1.0.4.jar"/>
 	<classpathentry kind="lib" path="lib/MINERful.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="lib" path="lib/OpenXES-20160212.jar"/>
+	<classpathentry kind="lib" path="lib/OpenXES-XStream-20160212.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
