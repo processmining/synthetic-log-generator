@@ -194,10 +194,14 @@ public class AssignmentCoordinator
   private void saveAssignmentModel(String file) {
     if (active != null) {
       active.setFilePath(file);
-      this.getControl().getAssignmentModel().addAssignmentModelAndView(active.
-          model,
+      this.getControl().getAssignmentModel().addAssignmentModelAndView(
+          active.model,
           active.getView(), active.getFilePath());
     }
+  }
+  
+  public AssignmentModel getActiveModel() {
+	  return active.model;
   }
 
   /**

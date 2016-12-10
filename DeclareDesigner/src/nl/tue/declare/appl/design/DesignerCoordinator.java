@@ -12,27 +12,40 @@ package nl.tue.declare.appl.design;
  * @author Maja Pesic
  * @version 1.0
  */
-import java.util.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.util.Iterator;
 
-import javax.swing.*;
-import javax.swing.event.*;
+import javax.swing.JDesktopPane;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
 
-import nl.tue.declare.appl.design.gui.*;
 import nl.tue.declare.appl.design.gui.MainFrame;
+import nl.tue.declare.appl.design.gui.MainFrame_AboutBox;
 import nl.tue.declare.appl.design.model.AssignmentCoordinator;
 import nl.tue.declare.appl.design.model.AssignmentCoordinatorListener;
 import nl.tue.declare.appl.design.organization.OrganizationCoordinator;
 import nl.tue.declare.appl.design.template.ConstraintsTemplateCoordinator;
-import nl.tue.declare.appl.util.*;
-import nl.tue.declare.control.*;
-import nl.tue.declare.domain.template.*;
+import nl.tue.declare.appl.util.ErrorMessage;
+import nl.tue.declare.control.Control;
+import nl.tue.declare.domain.template.Language;
+import at.wu.ac.declare.appl.design.model.LogCoordinator;
 
 public class DesignerCoordinator implements AssignmentCoordinatorListener {
 
 	private static final int KEY_QUIT = KeyEvent.VK_Q;
 	private static final int KEY_OPEN_MODEL = KeyEvent.VK_O;
+	private static final int KEY_LOG_MODEL = KeyEvent.VK_L;
 	private static final int KEY_SAVE_MODEL = KeyEvent.VK_S;
 	private static final int KEY_MODEL_PROPERTIES = KeyEvent.VK_P;
 	private static final int KEY_MODEL_EXPORT_IMAGE = KeyEvent.VK_I;
@@ -51,7 +64,7 @@ public class DesignerCoordinator implements AssignmentCoordinatorListener {
 
 	private JDesktopPane desktop;
 
-	private JMenuItem save, saveAs, properties, export, verify;
+	private JMenuItem save, saveAs, properties, export, verify, log;
 
 	final Control control;
 
@@ -108,7 +121,7 @@ public class DesignerCoordinator implements AssignmentCoordinatorListener {
 			frameSize.width = screenSize.width;
 		}
 		mainFrame.setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
-		mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH); //Tartu 
+		mainFrame.setExtendedState(JFrame.EXIT_ON_CLOSE);
 		mainFrame.setVisible(true);
 	}
 
@@ -280,17 +293,6 @@ public class DesignerCoordinator implements AssignmentCoordinatorListener {
 			});
 			jMenuAssignment.add(menuItem);
 		}
-		{
-			JMenuItem menuItem = new JMenuItem("Generate Log");
-			setMenuKey(menuItem, KEY_OPEN_MODEL);
-			menuItem.setActionCommand("generate");
-			menuItem.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					new ParameterSettings().show();
-				}
-			});
-			jMenuAssignment.add(menuItem);
-		}
 
 		// Set up the menu item for save model
 		this.save = new JMenuItem("Save");
@@ -348,6 +350,18 @@ public class DesignerCoordinator implements AssignmentCoordinatorListener {
 		});
 
 		jMenuAssignment.add(this.verify);
+
+		// Set up the menu item for event log generation
+		log = new JMenuItem("Generate Event Log");
+		setMenuKey(log, KEY_LOG_MODEL);
+		log.setActionCommand("generate");
+		log.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				LogCoordinator logCoordinator = new LogCoordinator(mainFrame,assignmentCoordinator.getActiveModel());
+				logCoordinator.generateLog();
+			}
+		});
+		jMenuAssignment.add(log);
 
 		// Set up the menu item image exporting
 		this.export = this.exportItem();
@@ -488,6 +502,7 @@ public class DesignerCoordinator implements AssignmentCoordinatorListener {
 		this.properties.setEnabled(enabled);
 		this.verify.setEnabled(enabled);
 		this.export.setEnabled(enabled);
+		this.log.setEnabled(enabled);
 	}
 
 	public void deactivated(JInternalFrame frame) {

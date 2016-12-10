@@ -53,6 +53,7 @@ public class MainFrame
     setBounds(inset, inset,
               screenSize.width - inset * 2,
               screenSize.height - inset * 2);
+	toFront();
   }
 
 
