@@ -14,7 +14,6 @@ import at.wu.ac.declare.util.OriginalDeclareMapDecoder;
 public class LogCoordinator implements ILogGenerator {
 	private JFrame mainFrame;
 	private LogGenerationDialog logGenDialog;
-	private File selectedFile;
 	private MinerFulLogMaker logMak;
 	private AssignmentModel assignmentModel;
 
