@@ -18,7 +18,7 @@ public class OriginalDeclareTransferObjectToConstraintTranslator {
 	public Constraint createConstraint(OriginalDeclareConstraintTransferObject conTO) {
 		Constraint minerFulConstraint = null;
 		if (conTO.minerFulTemplate != null) {
-			MetaConstraintUtils.makeConstraint(
+			minerFulConstraint = MetaConstraintUtils.makeConstraint(
 					conTO.minerFulTemplate,
 					this.taskCharSetFactory.createSetsFromTaskStringsCollection(
 							conTO.parameters
@@ -27,5 +27,4 @@ public class OriginalDeclareTransferObjectToConstraintTranslator {
 		}
 		return minerFulConstraint;
 	}
-
 }
